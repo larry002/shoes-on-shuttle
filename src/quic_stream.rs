@@ -42,7 +42,7 @@ impl AsyncWrite for QuicStream {
         Pin::new(&mut self.send_stream).poll_flush(cx)
     }
 
-    fn poll_shutdown(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<std::io::Result<()>> {
+    fn poll_shutdown(self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<std::io::Result<()>> {
         // TODO: for some reason, this causes an unwrap and a mutex poison error in quinn.
         // Pin::new(&mut self.send_stream).poll_shutdown(cx)
         Poll::Ready(Ok(()))
@@ -55,7 +55,7 @@ impl AsyncPing for QuicStream {
     }
 
     fn poll_write_ping(
-        mut self: Pin<&mut Self>,
+        self: Pin<&mut Self>,
         _cx: &mut Context<'_>,
     ) -> Poll<std::io::Result<bool>> {
         unimplemented!();

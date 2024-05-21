@@ -184,14 +184,14 @@ impl VmessStream {
         let max_unencrypted_read_data_size = MAX_ENCRYPTED_READ_DATA_SIZE - tag_len;
         let max_unencrypted_write_data_size = MAX_ENCRYPTED_WRITE_DATA_SIZE - tag_len;
 
-        const max_read_packet_size: usize = MAX_ENCRYPTED_READ_DATA_SIZE + 2;
+        let max_read_packet_size: usize = MAX_ENCRYPTED_READ_DATA_SIZE + 2;
         let unprocessed_buf = allocate_vec(max_read_packet_size).into_boxed_slice();
         let processed_buf = allocate_vec(max_unencrypted_read_data_size).into_boxed_slice();
 
         let (write_cache, mut write_packet) = if !is_udp {
             let write_cache = allocate_vec(max_unencrypted_write_data_size).into_boxed_slice();
 
-            const max_write_packet_size: usize = MAX_ENCRYPTED_WRITE_DATA_SIZE + 2;
+            let max_write_packet_size: usize = MAX_ENCRYPTED_WRITE_DATA_SIZE + 2;
 
             // we need to be able to send a full packet, and the prefix (response) data all
             // at once. the response is relatively small, check vmess_handler.

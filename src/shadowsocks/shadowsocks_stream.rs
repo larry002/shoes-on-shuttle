@@ -890,7 +890,7 @@ impl AsyncReadMessage for ShadowsocksStream {
 impl AsyncWriteMessage for ShadowsocksStream {
     fn poll_write_message(
         self: Pin<&mut Self>,
-        cx: &mut Context<'_>,
+        _cx: &mut Context<'_>,
         buf: &[u8],
     ) -> std::task::Poll<std::io::Result<()>> {
         let this = self.get_mut();
