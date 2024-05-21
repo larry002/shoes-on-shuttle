@@ -324,7 +324,7 @@ pub async fn setup_client_stream(
     }
 }
 
-pub async fn start_tcp_server(config: ServerConfig) -> std::io::Result<Option<JoinHandle<()>>> {
+pub async fn start_tcp_server(config: ServerConfig) -> std::io::Result<JoinHandle<()>> {
     let ServerConfig {
         bind_location,
         tcp_settings,
@@ -348,7 +348,7 @@ pub async fn start_tcp_server(config: ServerConfig) -> std::io::Result<Option<Jo
         Arc::new(create_tcp_server_handler(protocol, &mut rules_stack));
     debug!("TCP handler: {:?}", tcp_handler);
 
-    Ok(Some(tokio::spawn(async move {
+    Ok(tokio::spawn(async move {
         match bind_location {
             BindLocation::Address(a) => {
                 // TODO: make this non-blocking?
@@ -370,5 +370,5 @@ pub async fn start_tcp_server(config: ServerConfig) -> std::io::Result<Option<Jo
                 }
             }
         }
-    })))
+    }))
 }

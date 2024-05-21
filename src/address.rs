@@ -171,6 +171,19 @@ impl NetLocation {
             Address::Hostname(ref _d) => None,
         }
     }
+
+    pub fn from_socket_addr(addr: SocketAddr) -> Self {
+        match addr {
+            SocketAddr::V4(v4) => Self {
+                address: Address::Ipv4(*v4.ip()),
+                port: v4.port(),
+            },
+            SocketAddr::V6(v6) => Self {
+                address: Address::Ipv6(*v6.ip()),
+                port: v6.port(),
+            },
+        }
+    }
 }
 
 impl std::fmt::Display for NetLocation {

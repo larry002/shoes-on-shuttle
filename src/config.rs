@@ -506,7 +506,7 @@ impl<'de> serde::de::Deserialize<'de> for NetLocationMask {
     }
 }
 
-pub async fn load_configs(args: &Vec<String>) -> std::io::Result<Vec<ServerConfig>> {
+pub async fn load_configs(args: &[String]) -> std::io::Result<Vec<ServerConfig>> {
     let mut all_configs = vec![];
     for config_filename in args {
         let config_bytes = match tokio::fs::read(config_filename).await {

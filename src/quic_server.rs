@@ -275,7 +275,7 @@ async fn process_streams(
     }
 }
 
-pub async fn start_quic_server(config: ServerConfig) -> std::io::Result<Option<JoinHandle<()>>> {
+pub async fn start_quic_server(config: ServerConfig) -> std::io::Result<JoinHandle<()>> {
     let ServerConfig {
         bind_location,
         quic_settings,
@@ -325,7 +325,7 @@ pub async fn start_quic_server(config: ServerConfig) -> std::io::Result<Option<J
         Arc::new(create_tcp_server_handler(protocol, &mut rules_stack));
     debug!("TCP handler: {:?}", tcp_handler);
 
-    Ok(Some(tokio::spawn(async move {
+    Ok(tokio::spawn(async move {
         run_quic_server(
             bind_address,
             server_config,
@@ -334,5 +334,5 @@ pub async fn start_quic_server(config: ServerConfig) -> std::io::Result<Option<J
         )
         .await
         .unwrap();
-    })))
+    }))
 }

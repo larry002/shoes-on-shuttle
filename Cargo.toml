@@ -1,5 +1,5 @@
 [package]
-name = "shoes"
+name = "shoes-shuttle"
 version = "0.1.2"
 edition = "2021"
 license = "MIT"
@@ -41,6 +41,9 @@ serde_yaml = "*"
 tokio = { version = "*", features = ["fs", "io-util", "macros", "net", "rt-multi-thread", "sync", "time"] }
 tokio-rustls = { version = "*", features = ["dangerous_configuration"] }
 webpki-roots = { version = "*" }
+
+shuttle-runtime = "0.45.0"
+num_cpus = "1.16.0"
 
 [profile.release]
 opt-level = 3
