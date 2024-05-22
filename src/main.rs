@@ -1,3 +1,62 @@
+use log::debug;
+use shuttle_runtime::{CustomError, SecretStore, Secrets};
+use tokio::task::JoinHandle;
+
+use crate::address::NetLocation;
+use crate::config::{update_config, BindLocation, ServerConfig, Transport};
+use crate::quic_server::start_quic_server;
+use crate::tcp_server::start_tcp_server;
+use crate::thread_util::set_num_threads;
+
+#[derive(Debug)]
+struct ConfigChanged;
+
+async fn start_server(config: ServerConfig) -> std::io::Result<JoinHandle<()>> {
+    match config.transport {
+        Transport::Tcp => start_tcp_server(config).await,
+        Transport::Quic => start_quic_server(config).await,
+        Transport::Udp => todo!(),
+    }
+}
+
+struct ShoesService(pub ServerConfig);
+
+#[shuttle_runtime::main]
+async fn shuttle_main(
+    #[Secrets] secrets: SecretStore,
+) -> Result<ShoesService, shuttle_runtime::Error> {
+    let config_str = secrets.get("CONFIG").expect("config was not found");
+
+    let num_threads = num_cpus::get().min(4);
+    set_num_threads(num_threads);
+
+    let mut config = serde_yaml::from_str::<ServerConfig>(&config_str).map_err(CustomError::new)?;
+    update_config(&mut config).unwrap();
+
+    debug!("================================================================================");
+    debug!("{:#?}", &config);
+    debug!("================================================================================");
+
+    Ok(ShoesService(config))
+}
+
+#[shuttle_runtime::async_trait]
+impl shuttle_runtime::Service for ShoesService {
+    async fn bind(self, addr: std::net::SocketAddr) -> Result<(), shuttle_runtime::Error> {
+        let config = self.0;
+        let config = ServerConfig {
+            bind_location: BindLocation::Address(NetLocation::from_socket_addr(addr)),
+            ..config
+        };
+        start_server(config)
+            .await
+            .unwrap()
+            .await
+            .map_err(CustomError::new)?;
+        Ok(())
+    }
+}
+
 mod address;
 mod async_stream;
 mod client_proxy_selector;
@@ -32,62 +91,3 @@ mod util;
 mod vless_handler;
 mod vmess;
 mod websocket;
-
-use log::debug;
-use tokio::task::JoinHandle;
-
-use crate::address::NetLocation;
-use crate::config::{BindLocation, ServerConfig, Transport};
-use crate::quic_server::start_quic_server;
-use crate::tcp_server::start_tcp_server;
-use crate::thread_util::set_num_threads;
-
-#[derive(Debug)]
-struct ConfigChanged;
-
-async fn start_server(config: ServerConfig) -> std::io::Result<JoinHandle<()>> {
-    match config.transport {
-        Transport::Tcp => start_tcp_server(config).await,
-        Transport::Quic => start_quic_server(config).await,
-        Transport::Udp => todo!(),
-    }
-}
-
-struct ShoesService(pub ServerConfig);
-
-#[shuttle_runtime::main]
-async fn shuttle_main() -> Result<ShoesService, shuttle_runtime::Error> {
-    let config_paths = ["config.shoes.yaml".to_owned()];
-
-    let num_threads = num_cpus::get().min(4);
-
-    set_num_threads(num_threads);
-
-    let configs = config::load_configs(&config_paths)
-        .await
-        .map_err(shuttle_runtime::CustomError::new)?;
-
-    let config = configs.into_iter().next().unwrap();
-    debug!("================================================================================");
-    debug!("{:#?}", &config);
-    debug!("================================================================================");
-
-    Ok(ShoesService(config))
-}
-
-#[shuttle_runtime::async_trait]
-impl shuttle_runtime::Service for ShoesService {
-    async fn bind(self, addr: std::net::SocketAddr) -> Result<(), shuttle_runtime::Error> {
-        let config = self.0;
-        let config = ServerConfig {
-            bind_location: BindLocation::Address(NetLocation::from_socket_addr(addr)),
-            ..config
-        };
-        start_server(config)
-            .await
-            .unwrap()
-            .await
-            .map_err(shuttle_runtime::CustomError::new)?;
-        Ok(())
-    }
-}

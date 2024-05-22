@@ -611,6 +611,12 @@ pub async fn load_configs(args: &[String]) -> std::io::Result<Vec<ServerConfig>>
     Ok(server_configs)
 }
 
+pub fn update_config(config: &mut ServerConfig) -> std::io::Result<()> {
+    let client_groups = HashMap::from([("direct".to_owned(), vec![ClientConfig::default()])]);
+    let rule_groups = HashMap::new();
+    validate_server_config(config, &client_groups, &rule_groups)
+}
+
 fn validate_server_config(
     server_config: &mut ServerConfig,
     client_groups: &HashMap<String, Vec<ClientConfig>>,
