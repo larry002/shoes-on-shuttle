@@ -1,6 +1,15 @@
-# shoes
+# shoes on shuttle
 
-shoes is a multi-protocol proxy server written in Rust.
+[Shoes](https://github.com/cfal/shoes) is a multi-protocol proxy server written in Rust. Now, let's deploy it on [shuttle](https://www.shuttle.rs/) to get a free proxy.
+
+## How to deploy
+
+- Login shuttle.rs
+- Create your Secrets.toml (`address` doesn't matter)
+- `cargo shuttle project start`
+- `cargo shuttle deploy`
+
+See https://docs.shuttle.rs/getting-started/quick-start and https://docs.shuttle.rs/resources/shuttle-secrets for more information.
 
 ## Supported protocols
 
