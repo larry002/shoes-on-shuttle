@@ -1,4 +1,4 @@
 /target
 Cargo.lock
 
-Secrets.toml
+config.yaml

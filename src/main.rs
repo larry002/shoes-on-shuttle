@@ -1,5 +1,6 @@
 use log::debug;
-use shuttle_runtime::{CustomError, SecretStore, Secrets};
+use shuttle_runtime::CustomError;
+use tokio::fs;
 use tokio::task::JoinHandle;
 
 use crate::address::NetLocation;
@@ -22,10 +23,10 @@ async fn start_server(config: ServerConfig) -> std::io::Result<JoinHandle<()>> {
 struct ShoesService(pub ServerConfig);
 
 #[shuttle_runtime::main]
-async fn shuttle_main(
-    #[Secrets] secrets: SecretStore,
-) -> Result<ShoesService, shuttle_runtime::Error> {
-    let config_str = secrets.get("CONFIG").expect("config was not found");
+async fn shuttle_main() -> Result<ShoesService, shuttle_runtime::Error> {
+    let config_str = fs::read_to_string("config.yaml")
+        .await
+        .expect("fail to read config");
 
     let num_threads = num_cpus::get().min(4);
     set_num_threads(num_threads);

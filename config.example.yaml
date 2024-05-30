@@ -1,4 +1,3 @@
-CONFIG = """
 address: 0.0.0.0:10081
 transport: tcp
 protocol:
@@ -13,4 +12,3 @@ rules:
   - mask: 0.0.0.0/0
     action: allow
     client_proxy: direct
-"""

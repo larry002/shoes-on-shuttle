@@ -5,11 +5,11 @@
 ## How to deploy
 
 - Login shuttle.rs
-- Create your Secrets.toml (`address` doesn't matter)
+- Create your config.yaml (`address` doesn't matter)
 - `cargo shuttle project start`
 - `cargo shuttle deploy`
 
-See https://docs.shuttle.rs/getting-started/quick-start and https://docs.shuttle.rs/resources/shuttle-secrets for more information.
+See https://docs.shuttle.rs/getting-started/quick-start for more information.
 
 ## Supported protocols
 
