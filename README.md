@@ -5,7 +5,8 @@
 ## How to deploy
 
 - Login shuttle.rs
-- Create your config.yaml (`address` doesn't matter)
+- Create your `config.yaml` (`address` doesn't matter)
+- edit `name` in `Shuttle.toml`
 - `cargo shuttle project start`
 - `cargo shuttle deploy`
 
