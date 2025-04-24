@@ -42,7 +42,7 @@ tokio = { version = "*", features = ["fs", "io-util", "macros", "net", "rt-multi
 tokio-rustls = { version = "*", features = ["dangerous_configuration"] }
 webpki-roots = { version = "*" }
 
-shuttle-runtime = "0.45.0"
+shuttle-runtime = "0.48.0"
 num_cpus = "1.16.0"
 
 [profile.release]
