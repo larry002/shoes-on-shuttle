@@ -3,11 +3,11 @@ transport: tcp
 protocol:
   type: ws
   targets:
-    - matching_path: /some-path-you-like
+    - matching_path: /4BF20093
       protocol:
         type: vmess
         cipher: any
-        user_id: some-random-uuid
+        user_id: 4BF20093-7DD8-4EE4-A681-B6DDACAC0D60
 rules:
   - mask: 0.0.0.0/0
     action: allow
